@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const cookieParser = require("cookie-parser");
+const authRoute = require("./Routes/AuthRoute");
 const bodyParser = require('body-parser')
 
 const PORT=4000;
@@ -15,7 +17,10 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(bodyParser.json())
 
-mongoose.connect('mongodb://localhost:27017/Auth').then(()=>{
+mongoose.connect('mongodb://localhost:27017/Auth',{
+    useNewUrlParser: true,
+    useUnifiedTopology: true,})
+    .then(()=>{
     console.log('MongoDB successfully connected')
 }).catch(error=>{
     console.log('Mongodb Error',error);
@@ -33,4 +38,8 @@ app.use(
     })
 );
 
+app.use(cookieParser());
+
 app.use(express.json());
+
+app.use("/", authRoute);
